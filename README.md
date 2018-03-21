@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-
 
 **This version of Supreme Grabber is no longer being developed**
 
@@ -59,4 +56,3 @@ To Run:
 *IF YOU ENTER LEGITIMATE CREDIT CARD AND BILLING INFO WHILE TESTING, THE ITEM WILL BE PURCHASED*
 =======
 # Supreme-Grabber
->>>>>>> 97f45bd0e712185ea23526857b4c20f997866f56
