@@ -4,5 +4,4 @@ notifications:
     on_success: always
     on_failure: always
     template:
-      - "Supreme Grabber commit:(%{commit}) : %{message} %{test} "
-      - "Build details: %{build_url}"
+      - "Build <%{build_url}|#%{build_number}> %{result} for commit (<%{compare_url}|%{commit}>) of SupremeGrabber@%{branch}  in %{duration}"
