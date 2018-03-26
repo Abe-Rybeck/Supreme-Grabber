@@ -1,4 +1,4 @@
 /target/
-/*.xml
 /target
 /.settings
+/*.gitignore
