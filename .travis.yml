@@ -1,1 +1,9 @@
 language: java
+notifications:
+  pushover:
+    api_key: a8gn3ex1v15k2sihzw4wok8kjggkyr
+    users:
+      - u41coou4om4vdwvci5uuqtuqon8j74
+    template: "%{repository_slug} (%{commit}) : %{message} %{test} - Build details: %{build_url}"
+    on_success: always
+    on_failure: always
