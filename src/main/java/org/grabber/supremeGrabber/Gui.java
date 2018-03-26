@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.events.MouseAdapter;
@@ -63,11 +62,12 @@ public class Gui extends ApplicationWindow{
 	{
 		try
 		{
+			@SuppressWarnings("resource")
 			Scanner saveFile = new Scanner(new File("src//main/resources//saved.txt")).useDelimiter(",\\s*\\r\\n");
 			String[] string = new String[0];
 			String preCheck = saveFile.next();
 			string = preCheck.split("@@");
-			saveList = new ArrayList(Arrays.asList(string));
+			saveList = new ArrayList<String>(Arrays.asList(string));
 			saveFile.close();
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();

@@ -3,7 +3,6 @@ package org.grabber.supremeGrabber;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ public class Backend {
 	}
 
 	public void RunGrabber() throws InterruptedException, ParseException, IOException {
-		System.out.println("started");
 		if ((name != null) && (email != null) && (tel != null) && (address != null) && (zip != null) && (cardnum != null) && (month != null) && (year != null) && (ccv != null)) {
 			System.setProperty("webdriver.gecko.driver", "src//main//resources//geckodriver.exe");
 			FirefoxOptions options = new FirefoxOptions();
@@ -94,8 +92,8 @@ public class Backend {
 				driver.findElement(By.id("credit_card_month")).sendKeys(new CharSequence[] { month });
 				driver.findElement(By.id("credit_card_year")).sendKeys(new CharSequence[] { year });
 				driver.findElement(By.id("orcer")).sendKeys(new CharSequence[] { ccv });
-				ArrayList<WebElement> list = (ArrayList) driver.findElements(By.className("iCheck-helper"));
-				((WebElement) list.get(1)).click();
+				ArrayList<WebElement> list = (ArrayList<WebElement>) driver.findElements(By.className("iCheck-helper"));
+				list.get(1).click();
 				driver.findElement(By.name("commit")).click();
 
 				Thread.sleep(5000L);
