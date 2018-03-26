@@ -1,5 +1,6 @@
 
-**This version of Supreme Grabber is no longer being developed**
+[![Build Status](https://travis-ci.org/Abe-Rybeck/Supreme-Grabber.svg?branch=master)](https://travis-ci.org/Abe-Rybeck/Supreme-Grabber)
+
 
 	   _____                                        _____           _     _               
 	  / ____|                                      / ____|         | |   | |              
