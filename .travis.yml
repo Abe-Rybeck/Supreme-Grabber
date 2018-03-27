@@ -1,1 +1,7 @@
 language: java
+notifications:
+    slack: supremegrabber:i3VD4v3pkkuEe0zcPRq2oKSJ
+    on_success: always
+    on_failure: always
+    template:
+      - "Build <%{build_url}|#%{build_number}> %{result} for commit (<%{compare_url}|%{commit}>) of SupremeGrabber@%{branch}  in %{duration}"

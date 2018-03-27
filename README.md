@@ -1,6 +1,7 @@
 
 [![Build Status](https://travis-ci.org/Abe-Rybeck/Supreme-Grabber.svg?branch=master)](https://travis-ci.org/Abe-Rybeck/Supreme-Grabber)
 
+current purchase completion time: 11 Sec
 
 	   _____                                        _____           _     _               
 	  / ____|                                      / ____|         | |   | |              
