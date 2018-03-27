@@ -1,4 +1,6 @@
 language: java
+jdk: 
+    - oraclejdk8
 notifications:
     slack: supremegrabber:i3VD4v3pkkuEe0zcPRq2oKSJ
     on_success: always
