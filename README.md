@@ -1,7 +1,7 @@
 
 [![Build Status](https://travis-ci.org/Abe-Rybeck/Supreme-Grabber.svg?branch=master)](https://travis-ci.org/Abe-Rybeck/Supreme-Grabber)
 
-current purchase completion time: 11 sec
+**Visit "Releases" tab for compiled one-click-run download**
 
 	   _____                                        _____           _     _               
 	  / ____|                                      / ____|         | |   | |              
@@ -11,7 +11,8 @@ current purchase completion time: 11 sec
 	 |_____/ \__,_| .__/|_|  \___|_| |_| |_|\___|  \_____|_|  \__,_|_.__/|_.__/ \___|_|   
 	              | |                                                                     
 	              |_|                                                                     
-		A lightwieght assistance tool for purchasing Supreme Clothing and Accessories.
+		
+		A lightwieght assistance tool for purchasing Supreme Clothing and Accessories.	
 
 						Author: Abe Rybeck
 						
