@@ -47,7 +47,7 @@ public class Backend {
 
 	public void RunGrabber() throws InterruptedException, ParseException, IOException {
 		if ((name != null) && (email != null) && (tel != null) && (address != null) && (zip != null) && (cardnum != null) && (month != null) && (year != null) && (ccv != null)) {
-			System.setProperty("webdriver.gecko.driver", "src//main//resources//geckodriver.exe");
+			System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 			FirefoxOptions options = new FirefoxOptions();
 			options.setProfile(new FirefoxProfile());
 			options.addPreference("general.useragent.override", "iPhone");

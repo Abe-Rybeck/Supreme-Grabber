@@ -63,7 +63,7 @@ public class Gui extends ApplicationWindow{
 		try
 		{
 			@SuppressWarnings("resource")
-			Scanner saveFile = new Scanner(new File("src//main/resources//saved.txt")).useDelimiter(",\\s*\\r\\n");
+			Scanner saveFile = new Scanner(new File("saved.txt")).useDelimiter(",\\s*\\r\\n");
 			String[] string = new String[0];
 			String preCheck = saveFile.next();
 			string = preCheck.split("@@");
