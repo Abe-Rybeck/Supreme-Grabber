@@ -2,37 +2,40 @@ package org.grabber.supremeGrabber;
 
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 public class Backend {
-	public String name;
-	public String email;
-	public String tel;
-	public String address;
-	public String zip;
-	public String cardNum;
-	public String month;
-	public String year;
-	public String ccv;
-	public String desc;
-	public String size;
-	public String time;
-	public boolean finished = false;
+
+	private String name;
+	private String email;
+	private String tel;
+	private String address;
+	private String zip;
+	private String cardNum;
+	private String month;
+	private String year;
+	private String ccv;
+	private String desc;
+	private String size;
+	private String time;
+	private boolean finished = false;
 	int close;
+	double startTime;
+	WebDriver driver;
+
+
 
 	public Backend(String name, String email, String tel, String address, String zip, String cardNum, String month,String year, String ccv, String desc, String size, String time) {
 		this.name = name;
@@ -47,43 +50,41 @@ public class Backend {
 		this.desc = desc;
 		this.size = size;
 		this.time = time;
+		Runner.key = desc;
+
 	}
 
-	public void RunGrabber() throws InterruptedException, ParseException, IOException, WebDriverException, InvocationTargetException{
+	public void RunGrabber() throws InterruptedException {
 		if ((name != null) && (email != null) && (tel != null) && (address != null) && (zip != null) && (cardNum != null) && (month != null) && (year != null) && (ccv != null)) {
-			WebDriver driver = setDriver();
+			driver = setDriver(); //set-up Firefox driver
 			String keyWord = "//*[text()[contains(.,'" + desc + "')]]";
-			String keySize = "//*[text()[contains(.,'" + size + "')]]";
-			waitForTime();
-			driver.get("http://www.supremenewyork.com/mobile/?c=1#categories/new");
-			try {
-				driver.findElement(By.xpath(keyWord)).click();
-				driver.findElement(By.id("size-options")).click();
-				driver.findElement(By.xpath(keySize)).click();
-				driver.findElement(By.className("cart-button")).click();
-				driver.get("http://supremenewyork.com/checkout");
-				fillInfo(driver,  name,  email,  tel,  address,  zip,  cardNum,  month,  year,  ccv );
-				ArrayList<WebElement> list = (ArrayList<WebElement>) driver.findElements(By.className("iCheck-helper"));
-				list.get(1).click();
-				driver.findElement(By.name("commit")).click();
-				JOptionPane.showMessageDialog(null, "Purchase completed", "Completed",2);
-				finished = true;
-			} catch (NoSuchElementException ab) {
-				JOptionPane.showMessageDialog(null, "Key word did not point to a valid item or size.");
+			String keySize = "//*[text()='" + size + "']";
+			if(!Runner.getTest()) { //if test, skip wait-until
+				waitForTime();
 			}
+			else {
+				Thread.sleep(2000);
+			}
+			startTime = System.currentTimeMillis();
+			driver.get("http://www.supremenewyork.com/mobile/?c=1#categories/new"); //go-to supreme
+			try {driver.findElement(By.xpath(keyWord)).click();} //go-to item page
+			catch (NoSuchElementException wordException) { //go-to item page failed, ABORT
+				JOptionPane.showMessageDialog(null, "Item matching Keyword not found");
+				wordException.printStackTrace();
+				Runner.exception = "wordException";
+				return;
+			}
+			if(checkSold()) { // iterate until non-sold-out-color found
+				checkSize(keySize); //attempt to find chosen size, otherwise choose default
+				driver.findElement(By.className("cart-button")).click(); //add to cart
+				fillInfo(driver,  name,  email,  tel,  address,  zip,  cardNum,  month,  year,  ccv ); //checkout
+				finished = true; //announce finished
+			}
+			else {JOptionPane.showMessageDialog(null, "all item colors sold out");} //all colors sold out, ABORT
 		}
+
 	}
-	private void waitForTime() throws InterruptedException {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date date = new Date(System.currentTimeMillis());
-		String dateString = dateFormat.format(date);
-		while (!dateString.substring(11, 16).equalsIgnoreCase(time)) {
-			Thread.sleep(100L);
-			date = new Date(System.currentTimeMillis());
-			dateString = dateFormat.format(date);
-		}
-	}
-	
+
 	private WebDriver setDriver() {
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		FirefoxOptions options = new FirefoxOptions();
@@ -93,8 +94,59 @@ public class Backend {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 		return driver;
 	}
-	
+
+	private void waitForTime(){
+		driver.get("https://patrickhlauke.github.io/recaptcha");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date(System.currentTimeMillis());
+		String dateString = dateFormat.format(date);
+		while (!dateString.substring(11, 16).equalsIgnoreCase(time)) {
+			try {
+				Thread.sleep(100L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			date = new Date(System.currentTimeMillis());
+			dateString = dateFormat.format(date);
+		}
+	}
+
+	public boolean checkSold() {
+		int counter = 0;
+		List<WebElement> soldList = driver.findElements(By.cssSelector("span[class='cart-button sold-out']"));
+		while(true) {
+			if(soldList.size() !=0) {//if sold out)
+				counter++;
+				List<WebElement> colorList = driver.findElements(By.cssSelector("[id*=style-2]"));
+				if(counter <= colorList.size()) {
+					driver.findElement(By.id(colorList.get(counter).getAttribute("id"))).click();
+					soldList = driver.findElements(By.cssSelector("span[class='cart-button sold-out']"));
+				}
+				else { // all sold out
+					return false;
+				}
+			}
+			else { //not sold out , Continue
+				return true;
+			}
+		}
+	}
+
+	public void checkSize(String keySize) {
+		if(driver.findElements(By.xpath(keySize)).size() !=0){ //if size is available
+			driver.findElement(By.id("size-options")).click();//open option bar
+			try {
+				driver.findElement(By.xpath(keySize)).click();//get option
+			}
+			catch(ElementNotInteractableException sizeException1) {
+				sizeException1.printStackTrace();
+				Runner.exception = "sizeException1";
+			}
+		}
+	}
+
 	private void fillInfo(WebDriver driver, String name, String email, String tel, String address, String zip, String cardNum, String month, String year, String ccv) {
+		driver.get("http://supremenewyork.com/checkout");
 		driver.findElement(By.id("order_billing_name")).sendKeys(new CharSequence[] { name });
 		driver.findElement(By.id("order_email")).sendKeys(new CharSequence[] { email });
 		driver.findElement(By.id("order_tel")).sendKeys(new CharSequence[] { tel });
@@ -104,8 +156,20 @@ public class Backend {
 		driver.findElement(By.id("credit_card_month")).sendKeys(new CharSequence[] { month });
 		driver.findElement(By.id("credit_card_year")).sendKeys(new CharSequence[] { year });
 		driver.findElement(By.id("orcer")).sendKeys(new CharSequence[] { ccv });
+		ArrayList<WebElement> checkList = (ArrayList<WebElement>) driver.findElements(By.className("iCheck-helper"));
+		checkList.get(1).click();
+		driver.findElement(By.name("commit")).click();
 	}
+
 	public boolean getFinished() {
 		return this.finished;
+	}
+
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public double getStartTime() {
+		return startTime;
 	}
 }
