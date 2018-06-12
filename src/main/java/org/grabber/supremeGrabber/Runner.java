@@ -7,6 +7,7 @@ import java.text.ParseException;
 import javax.swing.JOptionPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.application.Application;
@@ -25,6 +26,11 @@ public class Runner extends Application {
 			AnchorPane root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.getIcons().add(new Image("supreme.png"));
+			primaryStage.getIcons().add(new Image("supreme16.png"));
+			primaryStage.getIcons().add(new Image("supreme256.png"));
+			primaryStage.getIcons().add(new Image("supreme32.png"));
+			primaryStage.getIcons().add(new Image("supreme48.png"));
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Supreme Grabber");
 			primaryStage.show();
@@ -35,7 +41,7 @@ public class Runner extends Application {
 	public static void main(String[] args) throws InterruptedException, ParseException, IOException {
 		launch(args);
 		if(run) {
-			Backend backend = new Backend(MainController.name, MainController.email, MainController.phone, MainController.address, MainController.zip, MainController.card, MainController.month, MainController.year,MainController.ccv, MainController.desc, MainController.size, MainController.time);
+			Backend backend = new Backend(MainController.name, MainController.email, MainController.phone, MainController.address, MainController.apt, MainController.zip, MainController.card, MainController.month, MainController.year,MainController.ccv, MainController.desc, MainController.size, MainController.time);
 			try {
 				backend.RunGrabber();
 				duration= Double.toString((System.currentTimeMillis()-backend.getStartTime()));

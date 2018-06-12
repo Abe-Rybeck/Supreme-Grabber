@@ -9,12 +9,13 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Backend {
 
@@ -22,6 +23,7 @@ public class Backend {
 	private String email;
 	private String tel;
 	private String address;
+	private String apt;
 	private String zip;
 	private String cardNum;
 	private String month;
@@ -37,11 +39,12 @@ public class Backend {
 
 
 
-	public Backend(String name, String email, String tel, String address, String zip, String cardNum, String month,String year, String ccv, String desc, String size, String time) {
+	public Backend(String name, String email, String tel, String address,String apt, String zip, String cardNum, String month,String year, String ccv, String desc, String size, String time) {
 		this.name = name;
 		this.email = email;
 		this.tel = tel;
 		this.address = address;
+		this.apt = apt;
 		this.zip = zip;
 		this.cardNum = cardNum;
 		this.month = month;
@@ -59,16 +62,24 @@ public class Backend {
 			driver = setDriver(); //set-up Firefox driver
 			String keyWord = "//*[text()[contains(.,'" + desc + "')]]";
 			String keySize = "//*[text()='" + size + "']";
+			googleLogin();
 			if(!Runner.getTest()) { //if test, skip wait-until
 				waitForTime();
 			}
-			else {
+			else { 
 				Thread.sleep(2000);
 			}
+
 			startTime = System.currentTimeMillis();
-			driver.get("http://www.supremenewyork.com/mobile/?c=1#categories/new"); //go-to supreme
+			driver.get("http://www.supremenewyork.com/mobile"); //go-to supreme
+			while(driver.findElements(By.id("new-category")).isEmpty()) {
+				driver.navigate().refresh();
+			}
+			driver.get("http://www.supremenewyork.com/mobile/?c=1#categories/new");//go-to new page
+			while(!driver.findElement(By.xpath(keyWord)).isDisplayed()) {
+			}
 			try {driver.findElement(By.xpath(keyWord)).click();} //go-to item page
-			catch (NoSuchElementException wordException) { //go-to item page failed, ABORT
+			catch (Exception wordException) { //go-to item page failed, ABORT
 				JOptionPane.showMessageDialog(null, "Item matching Keyword not found");
 				wordException.printStackTrace();
 				Runner.exception = "wordException";
@@ -79,10 +90,27 @@ public class Backend {
 				driver.findElement(By.className("cart-button")).click(); //add to cart
 				fillInfo(driver,  name,  email,  tel,  address,  zip,  cardNum,  month,  year,  ccv ); //checkout
 				finished = true; //announce finished
+
 			}
+
 			else {JOptionPane.showMessageDialog(null, "all item colors sold out");} //all colors sold out, ABORT
 		}
 
+	}
+
+	private void googleLogin() {
+		try {
+			driver.get("https://accounts.google.com/signin");
+			driver.findElement(By.id("Email")).sendKeys("supremegrabbertest1");
+			driver.findElement(By.id("next")).click();
+			driver.findElement(By.id("Passwd")).sendKeys("abe12345");
+			driver.findElement(By.id("signIn")).click(); 
+			driver.get("https://patrickhlauke.github.io/recaptcha");
+		}
+		catch(Exception googleException) {
+			googleException.printStackTrace();
+			Runner.exception = "googleException";
+		}
 	}
 
 	private WebDriver setDriver() {
@@ -96,7 +124,6 @@ public class Backend {
 	}
 
 	private void waitForTime(){
-		driver.get("https://patrickhlauke.github.io/recaptcha");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date(System.currentTimeMillis());
 		String dateString = dateFormat.format(date);
@@ -151,7 +178,10 @@ public class Backend {
 		driver.findElement(By.id("order_email")).sendKeys(new CharSequence[] { email });
 		driver.findElement(By.id("order_tel")).sendKeys(new CharSequence[] { tel });
 		driver.findElement(By.id("bo")).sendKeys(new CharSequence[] { address });
+		driver.findElement(By.id("oba3")).sendKeys(new CharSequence[] { apt });
 		driver.findElement(By.id("order_billing_zip")).sendKeys(new CharSequence[] { zip });
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nnaerb")));
 		driver.findElement(By.id("nnaerb")).sendKeys(new CharSequence[] { cardNum });
 		driver.findElement(By.id("credit_card_month")).sendKeys(new CharSequence[] { month });
 		driver.findElement(By.id("credit_card_year")).sendKeys(new CharSequence[] { year });
