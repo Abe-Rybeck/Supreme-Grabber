@@ -14,8 +14,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Backend {
 
@@ -180,8 +178,6 @@ public class Backend {
 		driver.findElement(By.id("bo")).sendKeys(new CharSequence[] { address });
 		driver.findElement(By.id("oba3")).sendKeys(new CharSequence[] { apt });
 		driver.findElement(By.id("order_billing_zip")).sendKeys(new CharSequence[] { zip });
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(ExpectedConditions.elementToBeClickable(By.id("nnaerb")));
 		driver.findElement(By.id("nnaerb")).sendKeys(new CharSequence[] { cardNum });
 		driver.findElement(By.id("credit_card_month")).sendKeys(new CharSequence[] { month });
 		driver.findElement(By.id("credit_card_year")).sendKeys(new CharSequence[] { year });
